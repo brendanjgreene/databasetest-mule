@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration5" host="0.0.0.0" port="5675" doc:name="HTTP Listener Configuration"/>
+    <http:listener-config name="HTTP_Listener_Configuration6" host="0.0.0.0" port="5674" doc:name="HTTP Listener Configuration"/>
+    <flow name="specificviewFlow1">
+        <http:listener config-ref="HTTP_Listener_Configuration6" path="/" doc:name="HTTP"/>
+        <parse-template location="specific.html" doc:name="Parse Template"/>
+    </flow>
+    <flow name="specificviewFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration5" path="/" doc:name="HTTP"/>
+        <custom-transformer class="database.qa.qac.ProcessorforData" doc:name="Java"/>
+        <logger message="SELECT * FROM PERSONAL WHERE '#[sessionVars.field]' #[sessionVars.operator] #[sessionVars.value];" level="INFO" doc:name="Logger"/>
+        <choice doc:name="operator Choice">
+            <when expression="#[sessionVars.'operator'=='&lt;']">
+                <logger message="reached &lt;" level="INFO" doc:name="reached &lt;"/>
+                <choice doc:name="feild choice for &lt;">
+                    <when expression="#[sessionVars.'field'=='marks']">
+                        <logger message="marks &lt;" level="INFO" doc:name="marks &lt;"/>
+                        <db:select config-ref="MySQL_Configuration" doc:name="marks &lt;">
+                            <db:parameterized-query><![CDATA[SELECT * FROM PERSONAL WHERE marks < #[sessionVars.value];]]></db:parameterized-query>
+                        </db:select>
+                    </when>
+                    <otherwise>
+                        <logger level="INFO" doc:name="id &lt;"/>
+                        <db:select config-ref="MySQL_Configuration" doc:name="id &lt;">
+                            <db:parameterized-query><![CDATA[SELECT * FROM PERSONAL WHERE id > #[sessionVars.value];]]></db:parameterized-query>
+                        </db:select>
+                    </otherwise>
+                </choice>
+            </when>
+            <when expression="#[sessionVars.'operator'=='&gt;']">
+                <logger level="INFO" doc:name="reached &gt;"/>
+                <choice doc:name="field choice for &gt;">
+                    <when expression="#[sessionVars.'field'=='id']">
+                        <logger message="id &gt;" level="INFO" doc:name="id &gt;"/>
+                        <db:select config-ref="MySQL_Configuration" doc:name="id &gt;">
+                            <db:parameterized-query><![CDATA[SELECT * FROM PERSONAL WHERE id > #[sessionVars.value];]]></db:parameterized-query>
+                        </db:select>
+                    </when>
+                    <otherwise>
+                        <logger message="marks &gt;" level="INFO" doc:name="marks &gt;"/>
+                        <db:select config-ref="MySQL_Configuration" doc:name="marks &gt;">
+                            <db:parameterized-query><![CDATA[SELECT * FROM PERSONAL WHERE marks > #[sessionVars.value];]]></db:parameterized-query>
+                        </db:select>
+                    </otherwise>
+                </choice>
+            </when>
+            <otherwise>
+                <choice doc:name="field Choice for =">
+                    <when expression="#[sessionVars.'field'=='marks']">
+                        <logger message="marks =" level="INFO" doc:name="marks ="/>
+                        <db:select config-ref="MySQL_Configuration" doc:name="select by marks =">
+                            <db:parameterized-query><![CDATA[SELECT * FROM PERSONAL WHERE marks = #[sessionVars.value];]]></db:parameterized-query>
+                        </db:select>
+                    </when>
+                    <otherwise>
+                        <logger message="id =" level="INFO" doc:name="id ="/>
+                        <db:select config-ref="MySQL_Configuration" doc:name="select by id =">
+                            <db:parameterized-query><![CDATA[SELECT * FROM PERSONAL WHERE id = #[sessionVars.value];]]></db:parameterized-query>
+                        </db:select>
+                    </otherwise>
+                </choice>
+            </otherwise>
+        </choice>
+        <json:object-to-json-transformer doc:name="Object to JSON"/>
+        <parse-template location="display.html" doc:name="Parse Template"/>
+        <set-property propertyName="content-type" value="text/html" doc:name="Property"/>
+    </flow>
+</mule>

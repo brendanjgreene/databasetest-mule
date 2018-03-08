@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> Data Entry Form</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body onload="accounts.forEach(myFunction)">
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="http://localhost:4480">Home</a>
+            </div>
+           
+   </div>
+</nav>
+    <div class="container">
+    <div class="panel panel-default">
+            <div class="panel-heading"><h1>Account(s)</h1></div>
+            <div class="panel-body">
+        
+<table  id="accounts" class="table table-striped">
+                <tr>
+                    <th>Name</th>
+                    <th>Marks</th>
+                    <th>Address</th>
+                </tr>
+                    
+                
+</table>
+</div>
+</div>
+        
+        
+    </div>
+</body>
+<script>
+insertTable = document.getElementById("accounts");
+var accounts = #[payload];
+
+function myFunction(account, index) {
+	insertTable.innerHTML = insertTable.innerHTML + 
+    "<tr><td>" + account.name + "</td>" +
+    "<td>" + account.marks + "</td>" +
+    "<td>" + account.address + "</td></tr>"; 
+}
+</script>
+
+</body>
+</html>

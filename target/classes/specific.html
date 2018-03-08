@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> Data Entry Form</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="http://localhost:4480">Home</a>
+            </div>
+            </div>
+</nav>
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h1>See Account Where;</h1></div>
+            <div class="panel-body">
+                <form action="http://localhost:5675" name="selectForm" method="post">
+                    
+                    
+                    <div class="form-group">
+                    
+                    <label>Field:</label>
+                    <select name="field">
+  						<option >marks</option>
+  						<option >id</option>
+					</select>
+					</div>
+					<div class="form-group">
+					<label>Operator:</label>
+                    <select name="operator">
+  						<option >=</option>
+  						<option >></option>
+  						<option ><</option>
+					</select>
+					</div>
+					<div class="form-group">
+                        <label>Value:</label>
+                        <input type="number" name="value" >
+                    </div>
+                    
+                    
+                    <button type="submit" class="btn btn-primary btn-lg" value="Submit">Submit to Database</button>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+
+</body>
+</html>

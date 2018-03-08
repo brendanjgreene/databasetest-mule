@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration1" host="0.0.0.0" port="5001" doc:name="HTTP Listener Configuration"/>
+    <db:mysql-config name="MySQL_Configuration1" host="localhost" port="3306" user="root" database="qac" doc:name="MySQL Configuration"/>
+    <http:listener-config name="HTTP_Listener_Configuration3" host="0.0.0.0" port="4777" doc:name="HTTP Listener Configuration"/>
+    <flow name="insertflowFlow1">
+        <http:listener config-ref="HTTP_Listener_Configuration3" path="/" doc:name="HTTP"/>
+        <parse-template location="insert.html" doc:name="Parse Template"/>
+    </flow>
+    <flow name="insertflowFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration1" path="/" doc:name="HTTP"/>
+        <db:insert config-ref="MySQL_Configuration1" doc:name="Database">
+            <db:parameterized-query><![CDATA[INSERT INTO `personal` ( `name`, `marks`, `address`) VALUES (#[payload.name], #[payload.marks], #[payload.address])]]></db:parameterized-query>
+        </db:insert>
+        <json:object-to-json-transformer doc:name="Object to JSON"/>
+        <flow-ref name="databasetestFlow" doc:name="databasetestFlow"/>
+    </flow>
+</mule>
